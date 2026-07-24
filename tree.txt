@@ -1,0 +1,11 @@
+.
+├── README.md
+├── LICENSE
+├── .gitignore
+├── tree.txt
+├── .github/workflows/build.yml
+├── inventory-service/
+├── docs/
+├── logs/
+├── k8s/
+└── verifier/

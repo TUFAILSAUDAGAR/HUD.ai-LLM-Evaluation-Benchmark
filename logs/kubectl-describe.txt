@@ -1,0 +1,23 @@
+Name: inventory-service-6b5bc5dc59-kr7xd
+Namespace: commerce-production
+Containers:
+  inventory-service:
+    Image: ghcr.io/northstar/inventory-service:3.4.0
+    State: Waiting
+      Reason: CrashLoopBackOff
+    Last State: Terminated
+      Reason: Error
+      Exit Code: 1
+    Restart Count: 6
+    Environment:
+      SPRING_PROFILES_ACTIVE: production
+      SPRING_CONFIG_ADDITIONAL_LOCATION: file:/etc/inventory/config/application-prod.properties
+    Mounts:
+      /etc/inventory/config from runtime-config (ro)
+Volumes:
+  runtime-config:
+    Type: ConfigMap
+    Name: inventory-service-config
+Events:
+  Normal Pulled  Successfully pulled image "ghcr.io/northstar/inventory-service:3.4.0"
+  Warning BackOff Back-off restarting failed container inventory-service

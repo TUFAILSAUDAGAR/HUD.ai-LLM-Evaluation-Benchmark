@@ -1,4 +1,7 @@
-target/
+**/target/
 .idea/
+.vscode/
 *.iml
 .DS_Store
+*.log
+!logs/*.log

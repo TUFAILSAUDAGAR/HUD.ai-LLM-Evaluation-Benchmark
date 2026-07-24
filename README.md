@@ -1,48 +1,72 @@
-# Settlement API
+# Inventory Service
 
-Settlement API is the payments-platform edge service that accepts merchant settlement instructions and returns a durable request identifier. It is deployed to the `payments-production` namespace behind the shared NGINX ingress tier.
+Inventory Service is the internal API used by the order-routing platform to retrieve available-to-promise stock for a SKU. The service is deployed to the production Kubernetes cluster as a stateless Spring Boot workload and is exposed only through the platform ingress.
 
-## Incident exercise
+## Project overview
 
-Release `2.8.0` completed the Java 17 to Java 21 runtime migration. The GitHub Actions build and container build are green, but the production Deployment never becomes available and its Pods enter `CrashLoopBackOff`.
+The service provides a narrow, read-only inventory view for downstream checkout and fulfilment workflows. Its API contract is intentionally small: `GET /health` reports service health and `GET /inventory` returns the inventory snapshot selected by query parameters.
 
-Your task is to identify the single defective Kubernetes configuration value and propose the smallest safe correction. The service source, Maven build, Docker image, Secret, Service, and Ingress are deliberately valid. Treat the supplied `kubectl-describe.txt`, `kubectl-logs.txt`, and `github-actions.log` as incident evidence captured shortly after rollout.
+This repository is a production-incident benchmark. A Java 21 migration and its build pipeline completed successfully, but the production rollout does not become available. The supplied logs capture the initial incident response window. Application code is not the source of the failure.
+
+## Architecture
+
+```text
+Order Routing -> NGINX Ingress -> ClusterIP Service -> inventory-service Pods
+                                                       |-- ConfigMap volume
+                                                       |-- runtime Secret
+                                                       `-- Spring Boot 3 / Java 21
+```
+
+The packaged application configuration supplies local defaults. Production configuration is delivered by a ConfigMap volume. The workload uses an explicit Spring configuration location so an invalid runtime configuration fails fast rather than serving with incomplete production settings. More detail is in [docs/architecture.md](docs/architecture.md).
+
+## Technology stack
+
+| Area | Technology |
+| --- | --- |
+| Runtime | Java 21, Spring Boot 3.3 |
+| Build | Maven, JUnit 5, JaCoCo, Spotless, Checkstyle |
+| Container | Multi-stage Docker build, Eclipse Temurin JRE 21 |
+| Delivery | GitHub Actions |
+| Platform | Kubernetes, NGINX Ingress |
 
 ## Local development
 
-Prerequisites: JDK 21 and Maven 3.9+.
+Install JDK 21 and Maven 3.9 or newer, then run:
 
 ```bash
-mvn verify
-mvn spring-boot:run
-curl -i -X POST http://localhost:8080/v1/settlements \
-  -H 'Content-Type: application/json' \
-  -d '{"merchantId":"mrc_1029","amountMinor":1250,"currency":"USD"}'
+mvn -f inventory-service/pom.xml verify
+mvn -f inventory-service/pom.xml spring-boot:run
+curl http://localhost:8080/health
+curl 'http://localhost:8080/inventory?sku=SKU-1001&warehouse=eu-west-1'
 ```
 
-The health endpoints are available at `/actuator/health/liveness` and `/actuator/health/readiness`.
+## Deployment
 
-## Delivery model
-
-CI runs `mvn verify` on Temurin 21 and then builds the runtime image. Cluster deployment is performed by the release controller after image publication. Kubernetes runtime settings are mounted from `settlement-api-config`; the application is intentionally configured to read that mounted file explicitly.
-
-## Repository layout
-
-| Path | Purpose |
-| --- | --- |
-| `src/` | Spring Boot service and tests |
-| `.github/workflows/build.yml` | Java 21 build and container verification |
-| `deployment.yaml` | Production workload definition |
-| `configmap.yaml` | Non-secret runtime configuration |
-| `kubectl-*.txt` | Incident evidence |
-| `expected_solution.md` | Maintainer answer key |
-| `grading.md` | Evaluation criteria |
-
-Apply manifests in dependency order after the `payments-production` namespace is provisioned by platform bootstrap:
+The platform bootstrap process creates the production namespace and image pull credentials. Apply these resources in order:
 
 ```bash
-kubectl apply -f configmap.yaml -f secret.yaml
-kubectl apply -f deployment.yaml -f service.yaml -f ingress.yaml
+kubectl apply -f k8s/namespace.yaml
+kubectl apply -f k8s/configmap.yaml -f k8s/secret.yaml
+kubectl apply -f k8s/deployment.yaml -f k8s/service.yaml -f k8s/ingress.yaml
 ```
 
-`secret.yaml` models an External Secrets-rendered object for this exercise; production credentials are not stored in source control.
+## Troubleshooting
+
+- Build and image evidence: [logs/github-actions.log](logs/github-actions.log)
+- Workload status and events: [logs/kubectl-describe.txt](logs/kubectl-describe.txt)
+- Previous container output: [logs/kubectl-logs.txt](logs/kubectl-logs.txt)
+- Automated local checks: [verifier/README.md](verifier/README.md)
+
+## Known production incident
+
+Release `3.4.0` exhibits `CrashLoopBackOff` immediately after the deployment controller creates Pods. CI passed, the image was pulled successfully, and Kubernetes mounted the referenced resources. Investigate the runtime configuration contract using the manifests and captured evidence. Avoid changing application source, build tooling, or health probes unless evidence demonstrates they are involved.
+
+## Repository structure
+
+```text
+inventory-service/   Spring Boot application, tests, and image definition
+k8s/                 Production Kubernetes resources
+logs/                Captured CI and Kubernetes incident evidence
+docs/                Architecture, solution key, and scoring rubric
+verifier/            Repeatable benchmark validation
+```

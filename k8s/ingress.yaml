@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: inventory-service
+  namespace: commerce-production
+  labels: {app.kubernetes.io/name: inventory-service}
+  annotations: {nginx.ingress.kubernetes.io/proxy-read-timeout: "30"}
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts: [inventory.api.northstar.example]
+      secretName: commerce-api-tls
+  rules:
+    - host: inventory.api.northstar.example
+      http:
+        paths:
+          - path: /inventory
+            pathType: Prefix
+            backend:
+              service:
+                name: inventory-service
+                port: {name: http}

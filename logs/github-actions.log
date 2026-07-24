@@ -1,0 +1,6 @@
+2025-06-11T09:31:10Z Java 21.0.5+11 was set as default
+2025-06-11T09:31:22Z [INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
+2025-06-11T09:31:23Z [INFO] BUILD SUCCESS
+2025-06-11T09:31:29Z Successfully tagged ghcr.io/northstar/inventory-service:3.4.0
+2025-06-11T09:31:34Z configmap/inventory-service-config configured (dry run)
+2025-06-11T09:31:34Z deployment.apps/inventory-service configured (dry run)
