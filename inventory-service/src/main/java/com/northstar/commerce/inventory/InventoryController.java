@@ -17,13 +17,18 @@ public class InventoryController {
   private static final Logger LOG = LoggerFactory.getLogger(InventoryController.class);
   private final InventoryService inventoryService;
 
-  public InventoryController(InventoryService inventoryService) { this.inventoryService = inventoryService; }
+  public InventoryController(InventoryService inventoryService) {
+    this.inventoryService = inventoryService;
+  }
 
   @GetMapping("/health")
-  public ResponseEntity<Map<String, String>> health() { return ResponseEntity.ok(Map.of("status", "UP")); }
+  public ResponseEntity<Map<String, String>> health() {
+    return ResponseEntity.ok(Map.of("status", "UP"));
+  }
 
   @GetMapping("/inventory")
-  public InventorySnapshot inventory(@RequestParam @NotBlank String sku, @RequestParam(required = false) String warehouse) {
+  public InventorySnapshot inventory(
+      @RequestParam @NotBlank String sku, @RequestParam(required = false) String warehouse) {
     LOG.info("Inventory lookup requested for sku={} warehouse={}", sku, warehouse);
     return inventoryService.lookup(sku, warehouse);
   }
