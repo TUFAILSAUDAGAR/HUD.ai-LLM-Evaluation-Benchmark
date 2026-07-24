@@ -1,0 +1,26 @@
+name: Build and publish settlement-api
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - name: Verify
+        run: mvn --batch-mode verify
+      - name: Build container image
+        run: docker build --tag ghcr.io/northstar/settlement-api:${{ github.sha }} .

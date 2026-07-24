@@ -1,0 +1,18 @@
+2025-06-11T09:31:04.182Z ##[group]Run actions/setup-java@v4
+2025-06-11T09:31:04.183Z with:
+2025-06-11T09:31:04.183Z   distribution: temurin
+2025-06-11T09:31:04.183Z   java-version: 21
+2025-06-11T09:31:10.458Z Java 21.0.5+11 was set as default
+2025-06-11T09:31:10.491Z ##[endgroup]
+2025-06-11T09:31:11.003Z ##[group]Run mvn --batch-mode verify
+2025-06-11T09:31:18.744Z [INFO] Compiling 2 source files with javac [debug release 21] to target/classes
+2025-06-11T09:31:23.118Z [INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
+2025-06-11T09:31:23.394Z [INFO] BUILD SUCCESS
+2025-06-11T09:31:23.394Z [INFO] Total time:  12.016 s
+2025-06-11T09:31:23.395Z ##[endgroup]
+2025-06-11T09:31:23.608Z ##[group]Run docker build --tag ghcr.io/northstar/settlement-api:9ac42c1 .
+2025-06-11T09:31:28.240Z #8 exporting to image
+2025-06-11T09:31:28.240Z #8 naming to ghcr.io/northstar/settlement-api:9ac42c1 done
+2025-06-11T09:31:28.240Z #8 DONE 0.4s
+2025-06-11T09:31:28.330Z ##[endgroup]
+2025-06-11T09:31:28.334Z Post job cleanup.
