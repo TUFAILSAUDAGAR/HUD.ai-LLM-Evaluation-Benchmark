@@ -1,7 +1,15 @@
 Name: inventory-service-6b5bc5dc59-kr7xd
 Namespace: commerce-production
+Priority: 0
+Service Account: default
+Node: ip-10-42-18-91.eu-west-1.compute.internal/10.42.18.91
+Start Time: Tue, 11 Jun 2025 09:42:18 +0000
+Labels: app.kubernetes.io/name=inventory-service
+        app.kubernetes.io/version=3.4.0
+Controlled By: ReplicaSet/inventory-service-6b5bc5dc59
 Containers:
   inventory-service:
+    Container ID: containerd://cd3e55f8b3e7f05c2ad2f9c5e2a0a4f1
     Image: ghcr.io/northstar/inventory-service:3.4.0
     State: Waiting
       Reason: CrashLoopBackOff
@@ -19,5 +27,10 @@ Volumes:
     Type: ConfigMap
     Name: inventory-service-config
 Events:
-  Normal Pulled  Successfully pulled image "ghcr.io/northstar/inventory-service:3.4.0"
-  Warning BackOff Back-off restarting failed container inventory-service
+  Type     Reason     Age                    From               Message
+  ----     ------     ----                   ----               -------
+  Normal   Scheduled  5m12s                  default-scheduler  Successfully assigned commerce-production/inventory-service-6b5bc5dc59-kr7xd to ip-10-42-18-91.eu-west-1.compute.internal
+  Normal   Pulled     4m57s                  kubelet            Successfully pulled image "ghcr.io/northstar/inventory-service:3.4.0" in 1.842s
+  Normal   Created    2m01s (x6 over 4m57s) kubelet            Created container inventory-service
+  Normal   Started    2m00s (x6 over 4m56s) kubelet            Started container inventory-service
+  Warning  BackOff    11s (x22 over 4m45s)  kubelet            Back-off restarting failed container inventory-service in pod inventory-service-6b5bc5dc59-kr7xd_commerce-production

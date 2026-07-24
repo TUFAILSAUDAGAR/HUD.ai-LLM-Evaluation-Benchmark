@@ -67,6 +67,6 @@ Release `3.4.0` exhibits `CrashLoopBackOff` immediately after the deployment con
 inventory-service/   Spring Boot application, tests, and image definition
 k8s/                 Production Kubernetes resources
 logs/                Captured CI and Kubernetes incident evidence
-docs/                Architecture, solution key, and scoring rubric
+docs/                Architecture and reviewer scoring rubric
 verifier/            Repeatable benchmark validation
 ```

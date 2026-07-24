@@ -1,4 +1,9 @@
 2025-06-11T09:46:33.412Z  INFO 1 --- [inventory-service] [main] c.n.c.i.InventoryApplication : Starting InventoryApplication v3.4.0 using Java 21.0.5
 2025-06-11T09:46:33.416Z  INFO 1 --- [inventory-service] [main] c.n.c.i.InventoryApplication : The following profile is active: "production"
-2025-06-11T09:46:33.587Z ERROR 1 --- [inventory-service] [main] o.s.boot.SpringApplication : Application run failed
+2025-06-11T09:46:33.587Z  WARN 1 --- [inventory-service] [main] o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt
+2025-06-11T09:46:33.602Z ERROR 1 --- [inventory-service] [main] o.s.boot.SpringApplication : Application run failed
 org.springframework.boot.context.config.ConfigDataResourceNotFoundException: Config data resource 'file [/etc/inventory/config/application-prod.properties]' via location 'file:/etc/inventory/config/application-prod.properties' does not exist
+	at org.springframework.boot.context.config.ConfigDataLocationResolvers.resolve(ConfigDataLocationResolvers.java:107) ~[spring-boot-3.3.5.jar!/:3.3.5]
+	at org.springframework.boot.context.config.ConfigDataImporter.load(ConfigDataImporter.java:94) ~[spring-boot-3.3.5.jar!/:3.3.5]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335) ~[spring-boot-3.3.5.jar!/:3.3.5]
+	at com.northstar.commerce.inventory.InventoryApplication.main(InventoryApplication.java:8) ~[!/:3.4.0]

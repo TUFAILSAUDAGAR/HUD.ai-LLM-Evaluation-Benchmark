@@ -52,6 +52,8 @@ spec:
             - name: runtime-config
               mountPath: /etc/inventory/config
               readOnly: true
+            - name: tmp
+              mountPath: /tmp
           resources:
             requests: {cpu: 100m, memory: 256Mi}
             limits: {cpu: "1", memory: 512Mi}
@@ -70,4 +72,7 @@ spec:
       volumes:
         - name: runtime-config
           configMap: {name: inventory-service-config}
+        - name: tmp
+          emptyDir:
+            medium: Memory
       terminationGracePeriodSeconds: 30
