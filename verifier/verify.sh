@@ -13,7 +13,7 @@ if [[ "${1:-}" == "--verify-fix" ]]; then
   config_path="$(awk '/SPRING_CONFIG_ADDITIONAL_LOCATION/{inside=1; next} inside && /^[[:space:]]+value:/{print $2; exit}' k8s/deployment.yaml)"
   [[ -n "$config_key" && -n "$config_path" ]] || { echo "FAIL: runtime configuration contract could not be evaluated"; exit 1; }
   [[ "${config_path##*/}" == "$config_key" ]] || { echo "FAIL: Deployment does not reference a file supplied by its ConfigMap"; exit 1; }
-  git diff --exit-code -- k8s/configmap.yaml >/dev/null || { echo "FAIL: the production ConfigMap must remain unchanged"; exit 1; }
+  git diff --exit-code HEAD -- k8s/configmap.yaml >/dev/null || { echo "FAIL: the production ConfigMap must remain unchanged"; exit 1; }
 fi
 
 echo PASS
